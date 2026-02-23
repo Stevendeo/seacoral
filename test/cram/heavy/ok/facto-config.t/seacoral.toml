@@ -1,0 +1,15 @@
+[project]
+files = ["test.c"]
+criterion = "WM"
+
+[pointer-handling]
+max-ptr-array-length = 5
+
+[add.pointer-handling]
+array-size-mapping = ["p:n"]
+
+[mult.pointer-handling]
+array-size-mapping = ["q:m"]
+
+[klee]
+timeout = 5

@@ -144,9 +144,9 @@ let load_section section (table: Toml.Types.table) : (unit, string) result =
   let from =
     match section.section_status with
     | Configured { values } -> values
-    | Registered -> {
-        global = section.section_default
-      ; specialized = Hashtbl.create 0}
+    | Registered ->
+        { global = section.section_default
+        ; specialized = Hashtbl.create 0 }
   in
   match update_section section from table with
   | Ok values ->
