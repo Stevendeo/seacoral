@@ -178,7 +178,11 @@ let post_process_eacsl_loop ~(project: _ Sc_project.Types.project) ~options l =
   loop 0 ~parallel (List.map (fun t -> t, Unknown) l)
 
 let run p testsuite =
-  let options = Sc_config.Section.get config_section in
+  let options =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name p))
+      config_section
+  in
   if not options.eacsl_enabled
   then Lwt.return_none
   else

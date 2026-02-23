@@ -260,7 +260,11 @@ let clang_libfuzzer ?(sanitizers = []) ?(libs = []) harness_o tested_o =
     of a harness for libfuzzer.  Returns a working state from which that harness
     can be compiled and used for generating test-cases. *)
 let setup ?dry workspace project : _ working_data Lwt.t =
-  let opt = Sc_config.Section.get config_section in
+  let opt =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+      config_section
+  in
   let* resdir = Fuzzing.install_resources_in ~workspace in
   let labelized_file = project.label_data.labelized_file in
   let codefile = workspace.workdir / "code-with-labels.c" in

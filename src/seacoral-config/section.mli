@@ -18,23 +18,25 @@ type any_section = Any: _ section -> any_section
     default settings are given by [default]. *)
 val define: string -> entries: 'a Eztoml.row list -> default: 'a -> 'a section
 
-(** [update_section section from table] updates the options [from] for
-    configuration section [section] using [table]. *)
-val update_section: 'a section -> 'a -> Toml.Types.table -> ('a, string) result
-
 (** [load_section section table] updates the internal options for the given
     configuration section using [table]. *)
-val load_section: 'a section -> ?from:'a -> Toml.Types.table -> (unit, string) result
+val load_section:
+  'a section -> Toml.Types.table -> (unit, string) result
 
 (** [load table] updates the internal options for registered configuration
     sections using [table]. *)
 val load: Toml.Types.table -> (unit, string) result
 
-(** [get ~check_loaded section] retrieves the settings of the given section.
+(** [get ~check_loaded ~entrypoint section] retrieves the settings of the given
+    section for a given entrypoint.
 
     Note: unless [check_loaded] is explicitly set to [false], {!load} must have
     been called before.  Otherwise, {!Errors.Unconfigured_section} is raised. *)
-val get: ?check_loaded:bool -> 'a section -> 'a
+val get:
+  ?check_loaded:bool
+  -> for_:[`Global | `Entrypoint of string]
+  -> 'a section
+  -> 'a
 
 (** [core_digest ()] computes a digest of the non-runtime part of the currently
     loaded configuration. *)

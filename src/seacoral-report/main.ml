@@ -207,7 +207,11 @@ let prepare_dir_in ~(t : Types.config) ~workspace =
 
 (** From a static database, writes the HTML report of the analysis. *)
 let generate_report project testsuite =
-  let t = Sc_config.Section.get Config.section in
+  let t =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+      Config.section
+  in
   if not t.enable then begin
     Log.debug "Not generating report, as requested.";
     Lwt.return_none

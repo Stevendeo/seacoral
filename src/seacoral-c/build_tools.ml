@@ -79,4 +79,5 @@ let config_section =
     ]
 
 let config =
-  lazy (Sc_config.Section.get config_section)
+  (* Ignoring entrypoint specific configuration for build_tools for now. *)
+  lazy (Sc_config.Section.get ~for_:`Global config_section)

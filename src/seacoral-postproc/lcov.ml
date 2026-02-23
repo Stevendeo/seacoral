@@ -376,7 +376,11 @@ let exec_testsuite_n_gen_report ~project ~workspace ~options testsuite =
   Lwt.return Sc_sys.File.(existing_dir @@ name report_dir)
 
 let run ~project testsuite : dir option Lwt.t =
-  let options = Sc_config.Section.get config_section in
+  let options =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+      config_section
+  in
   if not options.lcov_enabled then
     Lwt.return_none
   else

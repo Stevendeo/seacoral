@@ -120,7 +120,11 @@ let create_main_file ~opt ~no_preprocess { workdir; _ } project
   Lwt.return new_file
 
 let setup workspace ~optional:no_preprocess project : _ Lwt.t =
-  let opt = Sc_config.Section.get config_section in
+  let opt =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+      config_section
+  in
   let label_data = project.label_data in
   let label_file = link_file ~no_preprocess workspace label_data.label_file in
   let* main_file = create_main_file ~opt ~no_preprocess workspace project in

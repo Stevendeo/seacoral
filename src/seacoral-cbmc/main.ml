@@ -278,7 +278,11 @@ module M = struct
 
   let setup workspace ~optional project : _ ready Lwt.t =
     (* TODO: do not inhibit if the mode changes! *)
-    let opt = Sc_config.Section.get config_section in
+    let opt =
+      Sc_config.Section.get
+        ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+        config_section
+    in
     let* prev_mode =
       if not optional
       then Lwt.return_none

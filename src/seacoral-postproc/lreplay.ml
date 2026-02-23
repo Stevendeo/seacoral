@@ -49,7 +49,11 @@ let make_lreplay_module config =
     ~workspace:(Sc_core.Workspace.mksub config.project_workspace "lreplay")
 
 let run (p: _ Sc_project.Types.project) testsuite =
-  let lreplay_options = Sc_config.Section.get config_section in
+  let lreplay_options =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name p))
+      config_section
+  in
   if lreplay_options.lreplay_enabled
   then
     let* lrep_installed = Sc_ltest.Lreplay.lreplay_installed () in

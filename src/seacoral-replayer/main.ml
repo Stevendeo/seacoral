@@ -223,7 +223,11 @@ let setup workspace ~optional:_ project =
   (* TODO: use test_already_registered to check which tests already have been
      registered. *)
   ignore test_already_registered;
-  let opt = Sc_config.Section.get config_section in
+  let opt =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+      config_section
+  in
   let* resdir =
     Sc_core.Workspace.install_resources_in ~workspace resource_installer
   in

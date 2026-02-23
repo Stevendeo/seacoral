@@ -139,7 +139,11 @@ let project ?clean_start ~salt (config: config) =
 
   let resroot = Sc_sys.File.assume config.run.workdir / "shared" in
 
-  (* let plate = Sc_config.Section.get Plate_config.section in *)
+  (* let plate = Sc_config.Section.get
+        ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+        Plate_config.section
+      in *)
+
   let* workdir =
     let project_hash =
       project_hash ~salt ~files:(input_files @ fixtures_files) config

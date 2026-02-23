@@ -131,9 +131,14 @@ let compile_to_bitcode ~resdir ~incdir options c_file =
 
 (* --- *)
 
+let get_options project =
+  Sc_config.Section.get
+    ~for_:(`Entrypoint (Sc_project.Manager.entrypoint_name project))
+    Config.section
+
 let preprocess (type raw_test) workspace (project: raw_test project)
   : raw_test working_data Lwt.t =
-  let options = Sc_config.Section.get Config.section in
+  let options = get_options project in
   let* resdir = install_resources_in ~workspace in
   let* incdir = Sc_project.Manager.install_include_dir_in ~workspace in
   let driver_c = workspace.workdir / "driver.c"
@@ -151,8 +156,8 @@ let preprocess (type raw_test) workspace (project: raw_test project)
                ktest_io = (module Ktest.Make_io (Test_repr)); }
 
 let no_preprocess (type raw_test) workspace (project: raw_test project)
-  : raw_test working_data Lwt.t =
-  let options = Sc_config.Section.get Config.section in
+    : raw_test working_data Lwt.t =
+  let options = get_options project in
   let* resdir = install_resources_in ~workspace in
   let* harness_entrypoint, runtime_params = reuse_harness project in
   let workdir = workspace.workdir in

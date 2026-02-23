@@ -189,13 +189,22 @@ let load_config ?(enable_console_timing = true) args =
   | Ok () ->
       amend_config args;
       let module Section = Sc_config.Section in
-      let logs_config = Section.get Options.logs_section in
+      let for_ =
+        (* Only used to get the entrypoint. *)
+        let global_project =
+          Section.get ~for_:`Global Sc_lib.Config.project_section
+        in
+        `Entrypoint global_project.entrypoint
+      in
+      let logs_config = Section.get ~for_ Options.logs_section in
       setup_reporters ~enable_console_timing logs_config.log_level;
-      let run = Section.get Sc_lib.Config.run_section in
-      let project = Section.get Sc_lib.Config.project_section in
-      let fixtures = Section.get Sc_lib.Config.fixtures_section in
-      let pointer_handling = Section.get Sc_lib.Config.pointer_handling_section in
-      let run_salt = Section.core_digest () in
+      Log.app "Getting main configuration";
+      let project = Section.get ~for_ Sc_lib.Config.project_section in
+      let run = Section.get ~for_ Sc_lib.Config.run_section
+      and fixtures = Section.get ~for_ Sc_lib.Config.fixtures_section
+      and pointer_handling =
+        Section.get ~for_ Sc_lib.Config.pointer_handling_section
+      and run_salt = Section.core_digest () in
       Log.debug "Salt: %s" (Digest.to_hex run_salt);
       Sc_lib.Types.{ run = { run with config_input };
                      project; fixtures; pointer_handling },

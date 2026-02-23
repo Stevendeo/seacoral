@@ -152,7 +152,11 @@ let emit_c_test_comment ~project ppf
 
 let emit_test_file (type raw_test) ~(project: raw_test project) ~metadata ppf
     raw_test =
-  let export_options = Sc_config.Section.get config_section in
+  let export_options =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint project.extra.given_entrypoint_name)
+      config_section
+  in
   let module Raw_test = (val project.params.test_repr) in
   let module C_printer = Raw_test.Val.Printer in
   let C_printer.{ pp_heap; pp_globals; pp_locals } =
@@ -310,7 +314,11 @@ let compare_tests t1 t2 =
   Int.compare t1.metadata.serialnum t2.metadata.serialnum
 
 let write_testsuite ?exclude project =
-  let export_options = Sc_config.Section.get config_section in
+  let export_options =
+    Sc_config.Section.get
+      ~for_:(`Entrypoint project.extra.given_entrypoint_name)
+      config_section
+  in
   let collect_failures = project.params.seek_oracle_failures in
   let* tests =
     Lwt_stream.to_list @@

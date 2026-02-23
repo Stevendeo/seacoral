@@ -22,9 +22,13 @@ type 'a section =
   }
 and 'a section_status =
   | Registered
-  | Configured of { values: 'a }
+  | Configured of { values: 'a entrypoint_status_map }
 and any_section =
   | Any: _ section -> any_section
+and 'a entrypoint_status_map = {
+    global: 'a;
+    specialized: (string, 'a) Hashtbl.t
+  }
 
 let sections: (string, any_section) Hashtbl.t =
   Hashtbl.create 1
@@ -44,9 +48,9 @@ let define (type o) name ~entries ~default : o section =
     Hashtbl.add sections name (Any section);
     section
 
-let section_subtable section table =
+let subtable key table =
   let open Toml.Types in
-  let key = Table.Key.of_string section.section_name in
+  let key = Table.Key.of_string key in
   match Table.find key table with
   | TTable t ->
       t
@@ -55,13 +59,76 @@ let section_subtable section table =
   | exception Not_found ->
       Table.empty
 
-let update_section section from (table: Toml.Types.table) : _ =
+let section_subtable section table =
+  subtable (section.section_name) table
+
+(* Takes two tables and merges them. In case of conflict, takes
+   the [spec]'s element. *)
+let merge_global_and_specialized_tables glob spec =
+  Toml.Types.Table.merge
+    (fun _ v1 v2 ->
+      match v1, v2 with
+      | None, None -> None (* Dead code *)
+      | Some v, None | None, Some v -> Some v (* No ambiguity *)
+      | Some _, Some v -> Some v (* Ambiguous: take specialized *)
+    ) glob spec
+
+(* Assumes the toml file has sections prefixed with entrypoints.
+   Returns the list of entrypoints associated to the configurations linked
+   to their section table. *)
+let specialized_tables_of_section section table :
+      (string * Toml.Types.table) list =
+  let open Toml.Types in
+  Table.fold
+    (fun ep v acc ->
+      let ep = Table.Key.to_string ep in
+      match v with
+      | TTable t -> begin
+         match Table.find (Table.Key.of_string section.section_name) t with
+         | TTable t -> (ep, t) :: acc
+         | _ ->
+            Log.warn "Unexpected value for key %s.%s in configuration. \
+                      Ignoring it.\
+                      " ep section.section_name;
+            acc
+         | exception Not_found -> acc
+        end
+      | _ -> acc)
+    table
+    []
+
+let update_section
+      (section : 'a section)
+      (from : 'a entrypoint_status_map)
+      (table: Toml.Types.table) :
+      ('a entrypoint_status_map, string) result =
   let error_header ppf =
     Fmt.pf ppf "Error@ in@ section@ [%s]:" section.section_name
   in
   try
-    let subtable = section_subtable section table in
-    Ok (Eztoml.parse from subtable section.section_schema)
+    let global_subtable = section_subtable section table
+    and specialized_tables = specialized_tables_of_section section table in
+    let global = Eztoml.parse from.global global_subtable section.section_schema
+    and specialized = from.specialized in
+    let res = {global; specialized} in
+    let () =
+      List.iter
+        (fun (entrypoint, spec_table) ->
+          let ep_config_table =
+            merge_global_and_specialized_tables global_subtable spec_table
+          in
+          let from =
+            match Hashtbl.find from.specialized entrypoint with
+            | v -> v
+            | exception Not_found -> from.global
+          in
+          let config =
+            Eztoml.parse from ep_config_table section.section_schema
+          in
+          Hashtbl.add specialized entrypoint config)
+        specialized_tables
+    in
+    Ok res
   with
   | Errors.Bad_value_type_in_toml_table  _
   | Errors.Bad_value_in_toml_table _ as e ->
@@ -73,12 +140,13 @@ let update_section section from (table: Toml.Types.table) : _ =
         error_header Fmt.exn e
         Fmt.(list ~sep:comma string) (Eztoml.keys section.section_schema)
 
-let load_section section ?from (table: Toml.Types.table) : (unit, string) result =
+let load_section section (table: Toml.Types.table) : (unit, string) result =
   let from =
-    match from, section.section_status with
-    | Some s, _ -> s
-    | None, Configured { values } -> values
-    | None, Registered -> section.section_default
+    match section.section_status with
+    | Configured { values } -> values
+    | Registered -> {
+        global = section.section_default
+      ; specialized = Hashtbl.create 0}
   in
   match update_section section from table with
   | Ok values ->
@@ -102,7 +170,7 @@ let load (table: Toml.Types.table) : (unit, string) result =
   with Err e ->
     Error e
 
-let get (type o) ?(check_loaded = true) (section: o section) : o =
+let get (type o) ?(check_loaded = true) ~for_ (section: o section) : o =
   match section.section_status with
   | Registered when check_loaded ->
       raise @@ Errors.Unconfigured_section section.section_name
@@ -110,19 +178,31 @@ let get (type o) ?(check_loaded = true) (section: o section) : o =
       Log.warn "Configuration section %S has not been loaded (yet?); returning \
                 default options." section.section_name;
       section.section_default
-  | Configured { values; _ } ->
-      values
+  | Configured { values } -> begin
+      match for_ with
+      | `Global -> values.global
+      | `Entrypoint ep ->
+          try Hashtbl.find values.specialized ep with
+          | Not_found -> values.global
+    end
+
+let digest_config buff section c =
+  Buffer.add_string buff @@
+  Digest.to_hex @@
+  Eztoml.core_digest section.section_schema c
+  
 
 let core_digest () : Digest.t =
   let buff = Buffer.create 42 in
-  Hashtbl.iter begin fun _name (Any section) ->
-    Buffer.add_string buff @@
-    Digest.to_hex @@
-    Eztoml.core_digest section.section_schema @@
+  Hashtbl.iter begin fun _name (Any section) : unit ->
     match section.section_status with
-    | Registered -> section.section_default
-    | Configured { values } -> values
-  end sections;
+    | Registered -> digest_config buff section section.section_default
+    | Configured { values } ->
+       digest_config buff section values.global;
+       Hashtbl.iter
+         (fun _ -> digest_config buff section)
+         values.specialized
+    end sections;
   Digest.bytes (Buffer.to_bytes buff)
 
 let print_toml_spec ppf (Any section) : unit =
@@ -150,13 +230,19 @@ let print_default_config_file ~head ppf =
 
 let print_current_config_file ppf =
   iter_sections ~head:[] begin fun (Any section) ->
-    let value =
-      match section.section_status with
-      | Registered -> None
-      | Configured {values; _} -> Some values
-    in
-    Eztoml.print_as_toml_file ~with_doc:false ?value ppf
-      (section.section_name, section.section_schema)
+    match section.section_status with
+    | Registered -> 
+       Eztoml.print_as_toml_file ~with_doc:false ppf
+         (section.section_name, section.section_schema)
+    | Configured {values} ->
+       Eztoml.print_as_toml_file ~with_doc:false ~value:values.global ppf
+         (section.section_name, section.section_schema);
+       Hashtbl.iter
+         (fun entrypoint value ->
+           let key = Fmt.str "%s.%s" entrypoint section.section_name in
+           Eztoml.print_as_toml_file ~with_doc:false ~value:value ppf
+             (key, section.section_schema))
+         values.specialized
   end
 
 let print_doc ~head ppf =
