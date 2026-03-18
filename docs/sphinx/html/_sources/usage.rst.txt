@@ -1,0 +1,494 @@
+.. _usage:
+
+Usage
+=====
+
+Seacoral's workflow
+-------------------
+
+Consider the following example with a single condition.
+
+.. code-block:: c
+   :caption: get_sign.c
+
+   int get_sign(int i) {
+     if (i < 0) return -1;
+     return 1;
+   }
+
+
+This function has two branches: either `i` is strictly negative or `i` is positive.
+Our goal is to generate a test case for each of these branches, proving all
+the code is reachable. SeaCoral will work as follows.
+
+1. First, it will call `LTest <https://micdel.fr/ltest.html>`_ for annotating the
+   C code with `predicate coverage labels`, or `pc_label` s.
+   We are not talking here about usual C labels; `pc_label` s are defined as source
+   code location associated to a C boolean expression. A label is said `reachable`
+   if there exist a function input for which the label location is reached and the
+   boolean expression evaluated to a non null integer.
+
+  .. code-block:: c
+     :caption: get_sign_label.c
+
+     int get_sign(int i) {
+       int __retres;
+       pc_label(i < 0,1);
+       pc_label(! (i < 0),2);
+       if (i < 0) {
+         __retres = -1;
+         goto return_label;
+        }
+       __retres = 1;
+       return_label: return __retres;
+     }
+
+  We have two `pc_label` s, one for each function branch: `i < 0` and `i ≥ 0`.
+
+2. Then, `seacoral` calls a given set of tools to analyze the labelized C code.
+   The tools orchestrated by `seacoral` are `klee`, `libfuzzer`, `cbmc` and
+   `luncov`.
+   Each of them create a custom harness where each `pc_label` correspond to specific
+   instructions built from tool internals.
+
+3. Once each tool finished their analysis, they provide the test cases they
+   found for covering the function branches and produce a coverage report.
+
+Simple example
+--------------
+
+Running `seacoral` on this file with `klee` will automatically start the previous workflow:
+
+  .. code-block::
+
+    $ seacoral --files get_sign.c --entrypoint get_sign --tools klee
+    [A]{Sc} Starting to log into `_sc/get_sign.c-CC-@3/logs/1.log'
+    [A]{Sc} Initializing working environment...
+    [A]{Sc} Doing the hard work...
+    [A]{Sc} Launching klee on `get_sign'
+    [A]{Sc} Extracting new testcases from corpus...
+    [A]{Sc} Hard work done
+    [A]{Sc} Coverage statistics for `get_sign':
+    cov: 2 (100.0%) uncov: 0 (0.0%) unkwn: 0 (0.0%) with 2 tests
+    [A]{Sc} Covered labels: {1, 2}
+    [A]{Sc} Uncoverable labels: {}
+    [A]{Sc} Crash statistics: rte: none
+    [A]{Sc}        1: Covered
+                   2: Covered
+    Coverage: (2/2) 100.0%
+
+
+The generated tests can be found in the file `_sc/get_sign.c-CC-last/tests/cov/testsuite.c`.
+
+.. code-block:: c
+  :caption: testsuite.c
+
+  void test_1 () {
+     /* Found by klee after 1s550 in run 1 */
+     /* Outcome: covering labels {1} */
+     /* Globals, if any */
+     /* Effective argument(s), if any */
+     int i;
+     i = -2147483648;
+     (void) get_sign (i);
+  }
+
+  void test_2 () {
+    /* Found by klee after 1s553 in run 1 */
+    /* Outcome: covering labels {2} */
+    /* Globals, if any */
+
+    /* Effective argument(s), if any */
+       int i;
+       i = 0;
+       (void) get_sign (i);
+  }
+
+   int main () {
+     test_1 ();
+     test_2 ();
+     return __sc_exit_status;
+   }
+
+The first test reaches the first `pc_label` (`i < 0`) while the second
+one reaches the second `pc_label` (`i ≥ 0`).
+
+Using multiple tools
+--------------------
+
+This section presents the usage of `sc` on the `tritype` example, checking
+the property of a triangle.
+
+.. code-block:: c
+  :caption: tritype.c
+
+  /* Should return the type of the triangle
+     which has sides of these lengths.
+     3 = not a triangle
+     2 = equilateral triangle
+     1 = isoceles triangle
+     0 = other triangle
+  */
+
+  struct triangle {
+    int i;
+    int j;
+    int k;
+  };
+
+  int tritype(struct triangle t){
+  	int type_code;
+  	int i = t.i;
+  	int j = t.j;
+  	int k = t.k;
+  	if ((i == 0) || (j == 0) || (k == 0)) type_code = 4;
+  	else {
+  		type_code = 0;
+  		if (i == j) type_code = type_code + 1;
+  		if (i == k) type_code = type_code + 2;
+  		if (j == k) type_code = type_code + 3;
+  		if (type_code == 0){
+  			if ((i+j <= k) || (j+k <= i) || (i+k <= j))
+  				type_code = 4;
+  			else
+  				type_code = 1;
+  		}
+  		else if (type_code > 3) type_code = 3;
+  		else if ((type_code == 1) && (i+j > k)) type_code = 2;
+  		else if ((type_code == 2) && (i+k > j)) type_code = 2;
+  		else if ((type_code == 3) && (j+k > i)) type_code = 2;
+  		else if (type_code > 10) type_code = -1;
+  		else type_code = 4;
+  	}
+  	return type_code;
+  }
+
+The label annotation step (1.) returns 36 labels, one for each boolean
+expression in conditions and its negation. One of these labels is actually
+unreachable: the last condition `type_code > 10` is actually impossible.  If we
+start SeaCoral with `klee`, `libfuzzer` or `cbmc`, only 35 labels out of 36 will be
+covered:
+
+  .. code-block::
+
+    $ ./seacoral --files tritype.c --entrypoint tritype --tools libfuzzer
+    [A]{Sc} Starting to log into `_sc/tritype.c-CC-@1/logs/1.log'
+    [A]{Sc} Initializing working environment...
+    [A]{Sc} Doing the hard work...
+    [A]{Sc} Launching libfuzzer on `tritype'
+    [A]{Sc} Extracting new testcases from corpus...
+    [A]{Sc} Hard work done
+    [A]{Sc} Coverage statistics for `tritype': cov: 35 (97.2%) uncov: 0 (0.0%) unkwn: 1 (2.8%) with 10 tests
+    [A]{Sc} Covered labels:
+    {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36}
+    [A]{Sc} Uncoverable labels: {}
+    [A]{Sc} Crash statistics: rte: none
+
+
+SeaCoral saved the result of this analysis in `_sc/tritype.c-CC-tritype-last` —
+which is a symbolic link equivalent to `_sc/tritype.c-CC-tritype-@1` in the
+above log.  The status of the project will be re-used by the next analyses of
+`tritype`. We can now use one of the tools that allows to discover uncoverable
+labels in the code: `cbmc-assert`, `cbmc-clabel` or `luncov`.
+
+  .. code-block::
+
+     $ ./seacoral --files tritype.c --entrypoint tritype --tools cbmc --cbmc-mode assert
+     [A]{Sc} Starting to log into `_sc/tritype.c-CC-@2/logs/2.log'
+     [A]{Sc} Initializing working environment...
+     [A]{Sc} Current coverage statistics for `tritype': cov: 35 (97.2%) uncov: 0 (0.0%) unkwn: 1 (2.8%) with 10 tests
+     [A]{Sc} Doing the hard work...
+     [A]{Sc} Launching cbmc on `tritype'
+     [A]{Sc} Extracting new testcases from corpus...
+     [A]{Sc} Hard work done
+     [A]{Sc} Coverage statistics for `tritype': cov: 35 (97.2%) uncov: 1 (2.8%) unkwn: 0 (0.0%) with 10 tests
+     [A]{Sc} Covered labels:
+     {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36}
+     [A]{Sc} Uncoverable labels: {35}
+
+We see that `cbmc` in `assert` mode discovered a new uncoverable label,
+corresponding to the impossible condition.
+
+NB: tools can be used in parallel by giving a list of tools (separated by a
+comma) to the `--tools` option.
+
+Annotations
+-----------
+
+Here is one of the tests generated by libfuzzer:
+
+.. code-block:: c
+  :caption: Part of testcases.c
+
+  void test_1 () {
+      /* Found by libfuzzer after 2s689 in run 1 */
+      /* Outcome: covering labels {2, 4, 6, 7, 9, 11, 14, 21} */
+      /* Globals, if any */
+
+      /* Effective argument(s), if any */
+      struct triangle t;
+      (void) memcpy (&(t),
+                 &(struct triangle){.i = 16843009, .j = 16843009, .k = 16843009},
+                 sizeof (struct triangle));
+      (void) tritype (t);
+   }
+
+While this is a perfectly valid test, the negative value of `j` is disapointing
+(as we are working with triangles). We definitely should have used `unsigned int` instead of
+`int` in our triangle structure definition.
+
+But let's say there is an invariant forcing these values to be strictly positive
+in the project using the `tritype` function. We want to generate tests that only
+include triangles with positive values. SeaCoral allows to annotate the function with
+the instruction `sc_assume(p)`, where `p` is a boolean expression.
+
+.. code-block:: c
+  :caption: tritype_annoted.c
+
+  #include<seacoral/annots.h>
+
+  struct triangle {
+    int i;
+    int j;
+    int k;
+  };
+
+  int tritype(struct triangle t){
+  	int type_code;
+  	int i = t.i;
+  	int j = t.j;
+  	int k = t.k;
+
+	sc_assume(i > 0);
+	sc_assume(j > 0);
+	sc_assume(k > 0);
+
+	if ((i == 0) || (j == 0) || (k == 0)) type_code = 4;
+  	else {
+  		type_code = 0;
+  		if (i == j) type_code = type_code + 1;
+  		if (i == k) type_code = type_code + 2;
+  		if (j == k) type_code = type_code + 3;
+  		if (type_code == 0){
+  			if ((i+j <= k) || (j+k <= i) || (i+k <= j))
+  				type_code = 4;
+  			else
+  				type_code = 1;
+  		}
+  		else if (type_code > 3) type_code = 3;
+  		else if ((type_code == 1) && (i+j > k)) type_code = 2;
+  		else if ((type_code == 2) && (i+k > j)) type_code = 2;
+  		else if ((type_code == 3) && (j+k > i)) type_code = 2;
+  		else if (type_code > 10) type_code = -1;
+  		else type_code = 4;
+  	}
+  	return type_code;
+  }
+
+With this version of tritype, all tests will verify the assumed properties.
+Note that with these `sc_assume` s, SeaCoral fail to cover some labels:
+
+  .. code-block::
+
+   $ ./seacoral --files tritype_annoted.c --entrypoint tritype --tools libfuzzer
+   [A]{Sc} Starting to log into `_sc/tritype.c-CC-@4/logs/1.log'
+   [A]{Sc} Initializing working environment...
+   [A]{Sc} Doing the hard work...
+   [A]{Sc} Launching libfuzzer on `tritype'
+   [A]{Sc} Extracting new testcases from corpus...
+   [A]{Sc} Hard work done
+   [A]{Sc} Coverage statistics for `tritype': cov: 32 (88.9%) uncov: 0 (0.0%) unkwn: 4 (11.1%) with 7 tests
+   [A]{Sc} Covered labels:
+              {2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36}
+   [A]{Sc} Uncoverable labels: {}
+   [A]{Sc} Crash statistics: rte: none
+
+This is because the first condition (`(i == 0) || (j == 0) || (k == 0)`) is
+now unsatisfiable. In the current setting, each boolean expression is associated
+to a specific label. The three labels  `i == 0`, `j == 0` and `k == 0` are now
+unreachable, which can be proven by `cbmc` in assert mode:
+
+  .. code-block::
+
+   $ ./seacoral --files tritype_annoted.c --entrypoint tritype --tools cbmc --cbmc-mode assert
+   [A]{Sc} Starting to log into `_sc/tritype.c-CC-@5/logs/2.log'
+   [A]{Sc} Initializing working environment...
+   [A]{Sc} Current coverage statistics for `tritype': cov: 32 (88.9%) uncov: 0 (0.0%) unkwn: 4 (11.1%) with 7 tests
+                                                         rte: none
+   [A]{Sc} Doing the hard work...
+   [A]{Sc} Launching cbmc on `tritype'
+   [A]{Sc} Extracting new testcases from corpus...
+   [A]{Sc} Hard work done
+   [A]{Sc} Coverage statistics for `tritype': cov: 32 (88.9%) uncov: 4 (11.1%) unkwn: 0 (0.0%) with 7 tests
+   [A]{Sc} Covered labels:
+              {2, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 36}
+   [A]{Sc} Uncoverable labels: {1, 3, 5, 35}
+   [A]{Sc} Crash statistics: rte: none
+
+Note that `sc_assume` can be used anywhere in the function.
+Here is the exact semantic of
+`reachability` with respect to `sc_assume`: a label `l` is reachable if and only if
+there exist an input such that `l` is reached and all `sc_assume(p)` triggered during the
+execution evaluate `p` as `true`.
+
+NB: it is a bad practice to expect preconditions/invariants on values when performing
+unit-testing. Still, in some cases, it is interesting to force some values. A test set
+with null pointers leading to errors does not form the best coverage set. By assuming
+pointers are not null, we can generate prettier test sets.
+
+Fixtures
+--------
+
+Another way to control the input and the output of the tested function is through
+the fixtures.
+This feature allows to define, in a separate C file, two functions.
+- An initialization function for constraining globals. They can be set up by assigning them using assumptions throught `sc_assume`, or directly by assigning them.
+- An oracle function checking the tested function's result.
+
+Fixtures can be used to check the proper behavior of the `tritype` function
+with the structure set up as a global:
+
+.. code-block:: c
+  :caption: tritype-global.c
+
+  struct triangle {
+    int i;
+    int j;
+    int k;
+  };
+
+  struct triangle t;
+
+  int tritype(){
+  	int type_code;
+  	int i = t.i;
+  	int j = t.j;
+  	int k = t.k;
+  	if ((i == 0) || (j == 0) || (k == 0)) type_code = 4;
+  	else {
+  		type_code = 0;
+  		if (i == j) type_code = type_code + 1;
+  		if (i == k) type_code = type_code + 2;
+  		if (j == k) type_code = type_code + 3;
+  		if (type_code == 0){
+  			if ((i+j <= k) || (j+k <= i) || (i+k <= j))
+  				type_code = 4;
+  			else
+  				type_code = 1;
+  		}
+  		else if (type_code > 3) type_code = 3;
+  		else if ((type_code == 1) && (i+j > k)) type_code = 2;
+  		else if ((type_code == 2) && (i+k > j)) type_code = 2;
+  		else if ((type_code == 3) && (j+k > i)) type_code = 2;
+  		else type_code = 4;
+  	}
+  	return type_code;
+  }
+
+The following file defines the initialization function `init` and the oracle function `oracle`.
+
+.. code-block:: c
+  :caption: fixtures-tritype.c
+
+  #include<seacoral/annots.h>
+
+  extern struct triangle t;
+  enum state { EQUILATERAL, ISOSCELES };
+  enum state kind;
+
+  void init () {
+    sc_assume(t.i > 0 && t.j > 0 && t.k > 0);
+    sc_assume(kind == EQUILATERAL || kind == ISOSCELES);
+    switch (kind) {
+    case EQUILATERAL:
+      sc_assume (t.i == t.j && t.j == t.k);
+      break;
+    case ISOSCELES:
+      sc_assume(t.i == t.j || t.j == t.k || t.k == t.i);
+      break;
+    }
+  }
+
+  int oracle (int result) {
+    switch (kind) {
+    case EQUILATERAL:
+      return (result == 3);
+    case ISOSCELES:
+      return (result == 2);
+    }
+    return 0;
+  }
+
+The initialization function checks that all lengths are positive, and assumes
+two cases: the triangle can be equilateral, hence its sides have the same
+length; or isosceles, and two of its sides have the same length.
+
+The oracle checks that for equilateral triangle, the result will be 3, and that
+for isosceles triangles, the result will be two. All the other cases are impossible.
+
+Seacoral provides two modes for handling oracles. It can ignore oracle failures,
+focusing on generating tests satisfying the oracle, or seek for oracle failures.
+In our case, we are interested in the second case, with the option
+`--seek-oracle-failures`.
+
+  .. code-block::
+
+   $ ./seacoral --files tritype-global.c --tools klee --fixtures-files fixtures-tritype.c --fixtures-init init --fixtures-oracle oracle --seek-oracle-failures
+   [A]{Sc} Starting to log into `_sc/tritype-global.c-CC-@4/logs/1.log'
+   [A]{Sc} Initializing working environment...
+   [A]{Sc} Doing the hard work...
+   [A]{Sc} Launching klee on `tritype'
+   [A]{Sc} Extracting new testcases from corpus...
+   [A]{Sc} Hard work done
+   [A]{Sc} Test 1: covering labels {2, 4, 6, 7, 9, 11, 14, 21}
+   [A]{Sc} Test 2: covering labels {2, 4, 6, 8, 10, 11, 14, 22, 24, 25, 28, 29, 31, 33}
+   [A]{Sc} Test 3: oracle failure
+   [A]{Sc} Test 4: oracle failure
+   [A]{Sc} Test 5: covering labels {2, 4, 6, 7, 10, 12, 14, 22, 23, 25}
+   [A]{Sc} Test 6: oracle failure
+   [A]{Sc} Test 7: oracle failure
+   [A]{Sc} Test 8: covering labels {2, 4, 6, 8, 9, 12, 14, 22, 24, 25, 27, 29}
+   [A]{Sc} Coverage statistics for `tritype': cov: 20 (58.8%) uncov: 0 (0.0%) unkwn: 14 (41.2%) with 4 tests
+   [A]{Sc} Covered labels: {2, 4, 6, 7, 8, 9, 10, 11, 12, 14, 21, 22, 23, 24, 25, 27, 28, 29, 31, 33}
+   [A]{Sc} Uncoverable labels: {}
+   [A]{Sc} Crash statistics: rte: none
+   [A]{Sc} Oracle statistics: fails: 4 tests
+
+Seacoral found 4 tests that made the oracle fail. These tests can be read in
+`_sc/last/tests/fail/testsuite.c`.
+* Test 1 `(kind = ISOSCELES, i = 16777216, j = 16777216, k = 50331648)` is not a real triangle, because `i + j < k`
+* Test 2 `(kind = ISOSCELES, i = 16777216, j = 16777216, k = 16777216)` is actually equilateral.
+* Test 3 `(kind = ISOSCELES, i = 2130706432, j = 2130706432, k = 16777216)` is a real bug in the tritype function. The values of `i` and `j` provoke an integer overflow when
+  calculating `i + j`.
+* Test 4 `(kind = ISOSCELES, i = 16777216, j = 50331648, k = 16777216)` is equivalent to Test 1 switching `j` and `k`.
+
+Execution modes
+---------------
+
+Seacoral has six different execution modes. Each mode can be run with `$ seacoral [MODE]`.
+
+=========== ==========================================================================================
+Mode
+=========== ==========================================================================================
+check       Check configuration and (optionally) perform initial project initialization
+config      Managing configurations
+gen-rst-doc Dump a configuration documentation (RST format)
+generate    Generate tests (default action)
+initialize  Dump a configuration file with default options (alias for seacoral initialize) sub-command
+replay      Replay the current test suite without starting any test generation tool
+=========== ==========================================================================================
+
+All these modes has a common set of options.
+
+========================== ===================================================================================
+Option                     Documentation
+========================== ===================================================================================
+-C, --config               Use the given configuration file
+--clean-start              Remove the project with the same hash before starting its analysis (default: false)
+--stats, --show-statistics Print statistics of the current run
+--version                  Show version information.
+========================== ===================================================================================
+
+When run, seacoral will use the options defined in the `seacoral` configuration file specified
+with the `-C` option.
+More information on seacoral configuration in Section :ref:`configuration`.

@@ -1,0 +1,248 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project management &mdash; seacoral doc
+ (36e9a753
+) (2026/03/18 15:55) documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=beddf052" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ac4bede"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tools" href="tools.html" />
+    <link rel="prev" title="Seacoral’s configuration" href="configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">How to install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Seacoral’s configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Project management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#your-projects">Your projects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-layout">Project layout</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">seacoral</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Project management</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/project.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="project-management">
+<span id="project"></span><h1>Project management<a class="headerlink" href="#project-management" title="Link to this heading"></a></h1>
+<p>The set of analyzed files is called in Seacoral a <strong>project</strong>. Each time you
+invoke seacoral with a given configuration, it will either create a new project
+or use an existing one, and start a new <strong>run</strong>.</p>
+<p>More prcisely, the configuration options either are <em>project-wide</em> or <em>runtime</em>.
+Running seacoral on configuration that only differ in their <em>runtime</em> options
+will not create a new project: it will re-use the previously generated results
+for the new run. If only one project-wide option is changed, then seacoral will
+create another project and restart from scratch.</p>
+<section id="your-projects">
+<h2>Your projects<a class="headerlink" href="#your-projects" title="Link to this heading"></a></h2>
+<p>Each invocation of seacoral will generate several directories in the output
+path (by default, the directory is <cite>_sc</cite> and it is created where you launch
+seacoral). Let’s take the following commands as an example:</p>
+<blockquote>
+<div><div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="o">$</span> <span class="n">seacoral</span>
+    <span class="o">--</span><span class="n">config</span> <span class="n">test</span><span class="o">/</span><span class="n">cram</span><span class="o">/</span><span class="n">heavy</span><span class="o">/</span><span class="n">common</span><span class="o">-</span><span class="n">files</span><span class="o">/</span><span class="n">get_sign</span><span class="o">/</span><span class="n">seacoral</span><span class="o">.</span><span class="n">toml</span>
+    <span class="o">--</span><span class="n">tools</span> <span class="n">cbmc</span>
+<span class="o">...</span>
+<span class="o">$</span> <span class="n">ls</span> <span class="o">_</span><span class="n">sc</span><span class="o">/</span>
+<span class="mi">7888</span><span class="n">bd774fd614036e1314ed8ef490b8</span>  <span class="n">get_sign</span><span class="o">.</span><span class="n">c</span><span class="o">-</span><span class="nc">CC</span><span class="o">-</span><span class="nc">TIMESTAMP</span>            <span class="n">last</span>
+<span class="n">get_sign</span><span class="o">.</span><span class="n">c</span><span class="o">-</span><span class="nc">CC</span><span class="o">-@</span><span class="mi">1</span>                  <span class="n">get_sign</span><span class="o">.</span><span class="n">c</span><span class="o">-</span><span class="nc">CC</span><span class="o">-</span><span class="n">last</span>                 <span class="n">shared</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>These directories</p>
+<ol class="arabic">
+<li><p><cite>7888bd774fd614036e1314ed8ef490b8/</cite></p>
+<p>This directory name corresponds to the project hash, i.e. the hash of the
+project-wide configuration options used (including the C source code of the project).</p>
+</li>
+<li><p><cite>get_sign.c-CC-&#64;1</cite></p>
+<p>The directory of the first invocation of seacoral on a set of files and a
+criterion. If you restart seacoral with the same file and coverage
+criterion, it will generate a <cite>get_sign.c-CC-&#64;2</cite> directory.</p>
+</li>
+<li><p><cite>get_sign.c-CC-TIMESTAMP</cite></p>
+<p>An alias of the previous directory, but with a timestamp.</p>
+</li>
+<li><p><cite>get_sign.c-CC-last</cite></p>
+<p>A alias of the first directory, corresponds to the latest run of seacoral
+on a given project.</p>
+</li>
+<li><p><cite>last</cite></p>
+<p>An alias to the latest seacoral run.</p>
+</li>
+<li><p><cite>shared/</cite></p>
+<p>A special directory containing the stubs and drivers required for every project.</p>
+</li>
+</ol>
+</section>
+<section id="project-layout">
+<h2>Project layout<a class="headerlink" href="#project-layout" title="Link to this heading"></a></h2>
+<p>Let’s now see what is generated for a given project:</p>
+<blockquote>
+<div><div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="o">$</span> <span class="n">ls</span> <span class="o">_</span><span class="n">sc</span><span class="o">/</span><span class="n">last</span>
+<span class="n">cbmc</span>    <span class="n">corpus</span>       <span class="n">decoder</span>  <span class="n">labeling</span>  <span class="n">lreplay</span>  <span class="n">store</span>  <span class="n">validator</span>
+<span class="n">config</span>  <span class="n">covinfo</span><span class="o">.</span><span class="n">csv</span>  <span class="n">headers</span>  <span class="n">logs</span>      <span class="n">stats</span>    <span class="n">tests</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic">
+<li><p><cite>cbmc/</cite></p>
+<p>The working directory of the CBMC tool. If we had called another tool, it
+would have created a dedicated</p>
+</li>
+<li><p><cite>config/</cite></p>
+<p>For each run, this directory will contain three different files:
+* <cite>‘n’-given.toml</cite>: the toml given for the <cite>n</cite> th run;
+* <cite>‘n’-cmdline.txt</cite>: the command line of the <cite>n</cite> th run;
+* <cite>‘n’-actual.toml</cite>: the configuration of the <cite>n</cite> th run, merging the given
+configuration file and the command line (note: the command line arguments
+override the configuration file options).</p>
+</li>
+</ol>
+<ol class="arabic" start="2">
+<li><p><cite>corpus/</cite></p>
+<p>The directory where the seacoral internal representation of the generated
+tests are stored.</p>
+</li>
+<li><p><cite>covinfo.csv</cite></p>
+<p>A csv with information about each run (run id, time,
+covered/uncoverable/unknown labels, num of tests generated)</p>
+</li>
+<li><p><cite>decoder/</cite></p>
+<p>This directory contains the C file (and the associated <cite>.so</cite>) that decodes
+the internal representation of tests from <cite>corpus/</cite> into actual inputs of the
+tested function.</p>
+</li>
+<li><p><cite>headers/</cite></p>
+<p>Internal C files required for proper compilation of several modules of
+seacoral (lreplay &amp; validator).</p>
+</li>
+<li><p><cite>labeling/</cite></p>
+<p>The input files are labelized by <cite>frama-c-lannotate</cite> tool before being sent
+to the orchestrated tools. This directory contains the labelized file as
+well as several internal files used by the <cite>ltest</cite> tools.</p>
+</li>
+<li><p><cite>logs/</cite></p>
+<p>The directory in which the whole log of seacoral is stored.</p>
+</li>
+<li><p><cite>lreplay/</cite></p>
+<p>The working directory of the lreplay tool.</p>
+</li>
+<li><p><cite>stats/</cite></p>
+<p>For each run, a <cite>‘n’.json</cite> file in generated with several statistics (tools,
+execution time, number of generated tests, …)</p>
+</li>
+<li><p><cite>store/</cite></p></li>
+</ol>
+<blockquote>
+<div><p>Contains the project runtime store and stubs that allows dynamic tools to share
+their results efficiently. This is only used by seacoral internally.</p>
+</div></blockquote>
+<ol class="arabic" start="11">
+<li><p><cite>tests/</cite></p>
+<p>The C files of the generated tests are stored in this directory. They are
+separated into two categories: tests that do not raise an RTE (saved in
+<cite>tests/cov/</cite>), tests raising RTEs (saved in <cite>tests/rte/</cite>) and tests which make
+the oracle fail (saved in <cite>tests/oracle/</cite>).</p>
+</li>
+<li><p><cite>validator/</cite></p>
+<p>Contains the project validator stubs and shared objects. This is only used
+by seacoral internally.</p>
+</li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Seacoral’s configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tools.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright OCamlPro.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

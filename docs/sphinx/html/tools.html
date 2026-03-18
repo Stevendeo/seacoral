@@ -1,0 +1,331 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tools &mdash; seacoral doc
+ (36e9a753
+) (2026/03/18 15:55) documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=beddf052" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ac4bede"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Copyright and License" href="license.html" />
+    <link rel="prev" title="Project management" href="project.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">How to install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Seacoral’s configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="project.html">Project management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tools</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#preprocessing">Preprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lannotate">LAnnotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-runner">Test runner</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#generating-tests">Generating tests</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#klee">Klee</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#libfuzzer">Libfuzzer</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#test-harness-structured-data">Test Harness &amp; Structured Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#corpus-initialization">Corpus Initialization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fuzzing-process">Fuzzing Process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#focus-on-labels">Focus on Labels</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#cbmc">CBMC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#luncov">LUncov</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#postprocessing">Postprocessing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lreplay">LReplay</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#e-acsl">E-ACSL</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">seacoral</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tools</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tools.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tools">
+<h1>Tools<a class="headerlink" href="#tools" title="Link to this heading"></a></h1>
+<p>We describe here the different tools used by SeaCoral, and how it intergates them as
+part of its generation process.  When a tool operates on the inputs that have
+been prepared by SeaCoral, it uses external files that can be found in <cite>sc_drivers</cite>
+at the root of the project.</p>
+<p>SeaCoral works in three successive phases: preprocessing, test generation, and post
+processing.</p>
+<section id="preprocessing">
+<h2>Preprocessing<a class="headerlink" href="#preprocessing" title="Link to this heading"></a></h2>
+<section id="lannotate">
+<h3>LAnnotate<a class="headerlink" href="#lannotate" title="Link to this heading"></a></h3>
+<p>SeaCoral involves a tool for preprocessing files: <cite>frama-c-lannotate</cite>.  This is a
+<a class="reference external" href="https://frama-c.com/">frama-c</a> plug-in that belongs to the <a class="reference external" href="https://git.frama-c.com/pub/ltest">LTest</a> suite.</p>
+<p>Its purpose is to add <cite>labels</cite> to the analyzed functions (check <a class="reference internal" href="usage.html#usage"><span class="std std-ref">the
+Usage section</span></a> for an example).  Several annotation modes are available;
+use <cite>frama-c -lannot-list</cite> to list them.</p>
+</section>
+<section id="test-runner">
+<h3>Test runner<a class="headerlink" href="#test-runner" title="Link to this heading"></a></h3>
+<p>You can give SeaCoral your own set of tests with the test runner extension,
+configurable with the <cite>[test_runner] custom_tests = [file1.c,…]</cite> in the toml
+<a class="reference internal" href="configuration.html#configuration"><span class="std std-ref">configuration</span></a> table. If custom tests are provided, the
+test runner will compile the project (annotated by lannotate), execute each
+input and check which labels are covered.</p>
+</section>
+</section>
+<section id="generating-tests">
+<h2>Generating tests<a class="headerlink" href="#generating-tests" title="Link to this heading"></a></h2>
+<p>There are four main tools for generating test cases or proving
+unreachability of <cite>pclabels</cite>: <cite>klee</cite>, <cite>libfuzzer</cite>, <cite>cbmc</cite> and
+<cite>luncov</cite>.</p>
+<section id="klee">
+<h3>Klee<a class="headerlink" href="#klee" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://klee.github.io/">Klee</a> is a dynamic symbolic execution engine built
+on top of the LLVM compiler infrastructure.</p>
+<p>Two external files are associated with <cite>klee</cite>: <cite>klee.h</cite> and <cite>klee_driver.h</cite>.</p>
+<ul class="simple">
+<li><p><cite>klee.h</cite> gathers the definitions of <cite>klee</cite> primitives used by the project.
+It comes from the main <cite>klee</cite> repository.</p></li>
+<li><p><cite>klee_driver.h</cite> gathers the definitions for <cite>pc_label</cite> as well as memory
+initialization macros.</p></li>
+</ul>
+<p>Klee operates on a harness that SeaCoral generates based on the input source code.
+The purpose of the harness is to properly initialize each function arguments and
+uninitialized global using <cite>klee_make_symbolic</cite> (with proper treatment of
+pointers), and then call the studied function (aka. “entrypoint”).  The
+reachability of a <cite>pclabel</cite> at location <span class="math notranslate nohighlight">\(l\)</span> and with condition expression
+<span class="math notranslate nohighlight">\(e\)</span> is encoded as follows: if <span class="math notranslate nohighlight">\(l\)</span> is reached and <span class="math notranslate nohighlight">\(e\)</span> holds,
+then <cite>klee_assert(0)</cite> is called.  This forces klee to raise an error stating
+that the assertion has been violated, and to return the test corresponding to
+the failed assertion.  SeaCoral retreives the test that covers the <cite>pclabel</cite>, and
+registers it as a new test; at the same time, SeaCoral also replays the test using a
+process that does not fail when the assertion is reached: this allows SeaCoral to
+check whether further labels are covered by the newly registered test.</p>
+<p>NB: <cite>klee</cite> only generates new tests: it cannot prove the unreachability of
+a <cite>pclabel</cite>.</p>
+</section>
+<section id="libfuzzer">
+<h3>Libfuzzer<a class="headerlink" href="#libfuzzer" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://www.llvm.org/docs/LibFuzzer.html">libfuzzer</a> is a fuzzing utility
+that ships with any recent version of <a class="reference external" href="https://clang.llvm.org/">clang</a>.  A
+fuzzer searches the space of all test inputs for “interesting” items.  In
+general, the search is performed via selection, random mutations, and crossovers
+of given or generated inputs.  An input <span class="math notranslate nohighlight">\(x\)</span> is deemed “interesting”, and
+thus kept and more susceptible to be selected for mutations, when the execution
+of the tested function on <span class="math notranslate nohighlight">\(x\)</span> increases a specific coverage criterion.
+The latter is typically measured by means of an instrumentation of the tested
+code, and does not directly correspond the kind of criteria considered in SeaCoral.</p>
+<p>NB: <cite>libfuzzer</cite> only generates new tests: it cannot prove the unreachability of
+a <cite>pclabel</cite>.</p>
+<section id="test-harness-structured-data">
+<h4>Test Harness &amp; Structured Data<a class="headerlink" href="#test-harness-structured-data" title="Link to this heading"></a></h4>
+<p>In SeaCoral, <cite>libfuzzer</cite> operates by linking an automatically generated test harness
+with an instrumented version of the tested code.  Each input given and generated
+by the fuzzer solely consists of an array of bytes, that must then be fed to a
+deterministic decoder to produce the structured data that the tested function
+expects for each one of its arguments (and global variables).  The decoding
+algorithm employed allows SeaCoral to interpret generated tests and reuse them as
+seeds for any other tool that may be able to exploit them, such as <cite>klee</cite>.</p>
+<p>Note that, whereas every possible input data-structure (currently subject to the
+assumption that there is no sharing of pointers, i.e. there can be no aliasing
+between pointer arguments, and they may only point to tree-like data-structures)
+can be encoded into an array of bytes, some byte vectors may lead to
+inconsistent data-structures and thus need to be filtered out.  SeaCoral’s use of
+<cite>libfuzzer</cite> integrates dedicated filtering phases for this purpose.</p>
+</section>
+<section id="corpus-initialization">
+<h4>Corpus Initialization<a class="headerlink" href="#corpus-initialization" title="Link to this heading"></a></h4>
+<p>Fuzzers require an initial corpus of <em>test inputs</em> to operate properly.  In SeaCoral,
+these first inputs can either be randomly generated, or come from tests already
+generated in the project.  The size of this initial input corpus is determined
+by the <cite>libfuzzer.init_corpus_size</cite> configuration entry, and defaults to 1.
+When an insufficient amount of existing tests exists when libfuzzer starts, this
+corpus is completed by using a vector of null bytes (if the configuration entry
+<cite>libfuzzer.init_corpus_with_nulls</cite> holds), and then a set of vectors of bytes
+chosen uniformly at random.</p>
+</section>
+<section id="fuzzing-process">
+<h4>Fuzzing Process<a class="headerlink" href="#fuzzing-process" title="Link to this heading"></a></h4>
+<p>The initial corpus is first filtered to deal with sets of inputs that induce
+similar coverage, and eliminate inputs that correspond to inconsistent
+data-structures or do not satisfy pre-conditions.
+Then the search for new inputs happens via the fuzzing loop, for some given
+total time (<cite>libfuzzer.timeout</cite>) and/or number of iterations (<cite>libfuzzer.runs</cite>).</p>
+</section>
+<section id="focus-on-labels">
+<h4>Focus on Labels<a class="headerlink" href="#focus-on-labels" title="Link to this heading"></a></h4>
+<p>Eventually, a second filtering phase is used to filter out uneeded inputs.  At
+this stage, an optional tweak is available, that forces <cite>libfuzzer</cite> to only
+consider the coverage of <cite>pclabels</cite> when deciding whether to keep an input in
+the corpus.  Indeed, as mentioned above, coverage criteria that are directly
+measured by fuzzers do not directly corresond to coverage of <cite>pclabels</cite>.  One
+consequence of this mismatch is that <cite>libfuzzer</cite> may generate more test inputs
+than necessary to satisfy SeaCoral’s <cite>pclabel</cite>-based coverage criterion.  To counter
+this effect, SeaCoral offers the Boolean option <cite>labels_only</cite>, that makes this last
+filtering phase keep only those inputs that cover at least one <cite>pclabels</cite> that
+is not already covered by another known or generated input.</p>
+</section>
+</section>
+<section id="cbmc">
+<h3>CBMC<a class="headerlink" href="#cbmc" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="http://cprover.diffblue.com/">CBMC</a> stands for “C Bounded Model Checking”.
+This is a static analysis tool for analyzing C programs.</p>
+<p>There are three different execution modes for <cite>cbmc</cite>. They all generate similar
+harnesses for initializing variables through the
+<a class="reference external" href="http://cprover.diffblue.com/group__goto-cc.html">goto-cc</a> and
+<a class="reference external" href="http://cprover.diffblue.com/md__home_travis_build_diffblue_cbmc_doc_architectural_goto-harness.html">goto-harness</a> tools.
+The three modes only differ in how the <cite>pclabel</cite> s are defined and how <cite>cbmc</cite> is
+called.</p>
+<ul>
+<li><p>CBMC cover (cbmc)</p>
+<p>This options works with the <cite>cover</cite> mode of <cite>cbmc</cite>.
+It uses the external file <cite>cbmc_cover_driver.h</cite>.
+Each <cite>pc_label</cite> is defined as <cite>__CPROVER_cover(expr)</cite> and <cite>CBMC</cite> called with the <cite>–cover</cite> option.
+<cite>cbmc</cite> then attempts to cover as many <cite>pclabel</cite> s as possible and returns a list of test cases.</p>
+<p>NB: this mode only generates new tests: it cannot prove the unreachability of
+a <cite>pclabel</cite>.</p>
+</li>
+<li><p>CBMC with assertions (cbmc-assert)</p>
+<p>This options works with the classic execution mode of <cite>cbmc</cite>.
+It uses the external file <cite>cbmc_assert_driver.h</cite>.
+Each <cite>pc_label(p)</cite> is defined as an assertion of the negation of <cite>p</cite> (<cite>__CPROVER_assert (!p)</cite>).</p>
+<ul class="simple">
+<li><p>If there exist a counter example to this assertion, it means that <cite>p</cite> is reachable.</p></li>
+<li><p>If the assertion <cite>!p</cite> is proven by <cite>cbmc</cite>, then <cite>p</cite> never is true: the <cite>pclabel</cite> is unreachable.</p></li>
+</ul>
+</li>
+<li><p>CBMC with C labels (cbmc-clabel)</p>
+<p>This has the same behaviour than <cite>cbmc-assert</cite> except it replaces <cite>assertions</cite> by
+conditions leading to C labels; <cite>cbmc</cite> is then called to check if the C labels are
+reachable or not.</p>
+</li>
+</ul>
+</section>
+<section id="luncov">
+<h3>LUncov<a class="headerlink" href="#luncov" title="Link to this heading"></a></h3>
+<p>Preamble: the current version of the LUncov plug-in does not allow it to handle
+tasks involving complex pointer manipulation.</p>
+<p>Part of the <a class="reference external" href="https://git.frama-c.com/pub/ltest">LTest</a> suite, <cite>luncov</cite> is a <cite>frama-c</cite> plug-in
+that perform static analyzes on a project and try to deduce uncoverability of <cite>pclabel</cite> s.
+The analyzes are done by <cite>EVA</cite>, an abstract intepreter, and <cite>WP</cite>, a weakest precondition
+calculator.
+SeaCoral does not perform preprocessing for <cite>luncov</cite>, as <cite>lannot</cite> already prepares the project
+for it to work as is.</p>
+<p>NB: <cite>luncov</cite> does not generate new tests: it can only prove the unreachability of
+<cite>pclabel</cite> s.</p>
+</section>
+</section>
+<section id="postprocessing">
+<h2>Postprocessing<a class="headerlink" href="#postprocessing" title="Link to this heading"></a></h2>
+<p>Once tests are generated, SeaCoral provides two coverage report utilities: <cite>lreplay</cite> and
+<cite>e-acsl</cite>.</p>
+<section id="lreplay">
+<h3>LReplay<a class="headerlink" href="#lreplay" title="Link to this heading"></a></h3>
+<p>Part of the <a class="reference external" href="https://git.frama-c.com/pub/ltest">LTest</a> suite, <cite>lreplay</cite> is a
+standalone executable that will compile and execute a set of tests, and register
+which labels are reached in practice.</p>
+</section>
+<section id="e-acsl">
+<h3>E-ACSL<a class="headerlink" href="#e-acsl" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="https://frama-c.com/fc-plugins/e-acsl.html">E-ACSL</a> is a <cite>frama-c</cite> plug-in
+that translates an annotated C program into another program that detects the
+violated annotations at runtime. The annotations language used by <cite>e-acsl</cite> is
+<a class="reference external" href="https://frama-c.com/html/acsl.html">ACSL</a>.</p>
+<p>SeaCoral can use <cite>e-acsl</cite> to verify that <cite>ACSL</cite> annotations associated to a function
+are satisfied by the testcases generated during the previous phase.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="project.html" class="btn btn-neutral float-left" title="Project management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="license.html" class="btn btn-neutral float-right" title="Copyright and License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright OCamlPro.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,465 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seacoral’s configuration &mdash; seacoral doc
+ (36e9a753
+) (2026/03/18 15:55) documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=beddf052" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=4ac4bede"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Project management" href="project.html" />
+    <link rel="prev" title="Usage" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">How to install</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Seacoral’s configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-file">Configuration file</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#logs-configuration-options-logs">Logs configuration options [logs]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-configuration-options-run">Run configuration options [run]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project-configuration-options-project">Project configuration options [project]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pointer-handling-configuration-options-pointer-handling">Pointer-handling configuration options [pointer-handling]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#build-tools-configuration-options-build-tools">Build-tools configuration options [build-tools]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cbmc-configuration-options-cbmc">Cbmc configuration options [cbmc]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#eacsl-configuration-options-eacsl">Eacsl configuration options [eacsl]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#export-configuration-options-export">Export configuration options [export]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fixtures-configuration-options-fixtures">Fixtures configuration options [fixtures]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#klee-configuration-options-klee">Klee configuration options [klee]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lcov-configuration-options-lcov">Lcov configuration options [lcov]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#libfuzzer-configuration-options-libfuzzer">Libfuzzer configuration options [libfuzzer]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lreplay-configuration-options-lreplay">Lreplay configuration options [lreplay]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#luncov-configuration-options-luncov">Luncov configuration options [luncov]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#report-configuration-options-report">Report configuration options [report]</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test-runner-configuration-options-test-runner">Test-runner configuration options [test-runner]</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#about-pointer-specification">About pointer specification</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#command-line">Command line</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment variables</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="project.html">Project management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tools.html">Tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">Copyright and License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">seacoral</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Seacoral’s configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="seacoral-s-configuration">
+<span id="configuration"></span><h1>Seacoral’s configuration<a class="headerlink" href="#seacoral-s-configuration" title="Link to this heading"></a></h1>
+<section id="configuration-file">
+<h2>Configuration file<a class="headerlink" href="#configuration-file" title="Link to this heading"></a></h2>
+<p>SeaCoral can be configured differently via a <cite>toml</cite> file with the option <cite>-C</cite>.</p>
+<p>Options can be <cite>project-defining</cite> or <cite>runtime</cite>, depending on how they influence
+the analysis. If a <cite>project-defining</cite> option is changed between two analyses,
+a new separate project will be created and the old results will not be used.
+If a <cite>runtime</cite> option is changed beween two analyses, it will re-use the
+previous project.</p>
+<p>Note that you can generate a new configuration file with <cite>$ seacoral init</cite>.
+It will create a <cite>seacoral.toml</cite> that you can use to start the analysis.</p>
+<section id="logs-configuration-options-logs">
+<h3>Logs configuration options [logs]<a class="headerlink" href="#logs-configuration-options-logs" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>console-level</cite> [runtime knob]: Console log level: use 0 for no message, 1 for application-level messages
+only, 2 to include error messages, 3 to include warnings as well, 4 for more
+information, and 5 or any other value for full debug messages (default: 3).</p></li>
+</ul>
+</section>
+<section id="run-configuration-options-run">
+<h3>Run configuration options [run]<a class="headerlink" href="#run-configuration-options-run" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>workdir</cite> [runtime knob]: Directory where the working files are stored (defaults to “_sc”).</p></li>
+<li><p><cite>display-outcomes</cite> [runtime knob]: When set to “yes”, displays for each test which labels it covers (“yes” by
+default).</p></li>
+<li><p><cite>max-validation-concurrency</cite> [runtime knob]: Maximum number of concurrent validations (defaults to 16). A null value
+enables unlimitted parallelism.</p></li>
+<li><p><cite>verbose-validation</cite> [runtime knob]: When set, show labels reached during test validation in logs (false by
+default).</p></li>
+<li><p><cite>force-preprocess</cite> [runtime knob]: Force preprocessing, even if it has already been performed.</p></li>
+<li><p><cite>enable-syntax-check</cite> [runtime knob]: Whether to check for syntax errors in input files prior to labeling and test
+generation (true by default).</p></li>
+<li><p><cite>strategy</cite> [runtime knob]: Employ the given orchestration strategy: ‘s’ stands for sequential, ‘p’ for
+parallel, and ‘o’ for optimized.  The default is “p”.</p></li>
+<li><p><cite>test-timeout</cite> [runtime knob]: Time (in seconds) after which a test execution is considered to fail (1.000
+by default).</p></li>
+<li><p><cite>tools</cite> [runtime knob]: Tools to use. Defaults to []. Use [“*”] to select every known tool.</p></li>
+</ul>
+</section>
+<section id="project-configuration-options-project">
+<h3>Project configuration options [project]<a class="headerlink" href="#project-configuration-options-project" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>ignored-globals</cite> [project-defining knob]: Global variables that should be ignored.</p></li>
+<li><p><cite>external-libs</cite> [runtime knob]: External libraries required to compile the project, like “m” for the math
+library, for instance. Defaults to [].</p></li>
+<li><p><cite>name</cite> [project-defining knob]: Name for the project: this is used in logs and to name the working directory.</p></li>
+<li><p><cite>files</cite> [project-defining knob]: C files to consider.</p></li>
+<li><p><cite>criterion</cite> [project-defining knob]: Coverage criterion (case-insensitive). Launch <cite>frama-c -lannot-list</cite> for a list of available criteria (default: “CC”). If you used custom labels, you can use the “Custom” or “Empty” criterion.</p></li>
+<li><p><cite>entrypoint</cite> [project-defining knob]: Entrypoint for the project.</p></li>
+<li><p><cite>functions-to-cover</cite> [project-defining knob]: Comma-separated list of functions to cover. Use an empty string to automatically cover the entrypoint and any function it may call (this is the default); note this is achieved using an analysis of the syntactic callgraph, so function pointers are ignored. Use ‘*’ to select every function defined in the project.</p></li>
+<li><p><cite>include-dirs</cite> [project-defining knob]: Directories where header files are searched for (default: []).</p></li>
+</ul>
+</section>
+<section id="pointer-handling-configuration-options-pointer-handling">
+<h3>Pointer-handling configuration options [pointer-handling]<a class="headerlink" href="#pointer-handling-configuration-options-pointer-handling" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>max-ptr-array-length</cite> [project-defining knob]: Maximal size of C arrays that are induced by naked pointers. Default is 1.</p></li>
+<li><p><cite>max-cstring-length</cite> [project-defining knob]: Maximal size of C strings, excluding any additional terminating ‘000’.
+Default is 20.</p></li>
+<li><p><cite>max-non-nil-ptr-depth</cite> [project-defining knob]: Maximal depth at which pointers may be non-NULL, measured in number of
+pointer dereferences from function arguments. Default is 3.</p></li>
+<li><p><cite>treat-pointer-as-string</cite> [project-defining knob]: Formal arguments or global variables that are declared as naked pointers to
+characters (<cite>char *p</cite>), but need to be treated as ‘000’-terminated C-strings
+(default: []).</p></li>
+<li><p><cite>array-size-mapping</cite> [project-defining knob]: Pairs of variables of the form <cite>“p:n”</cite>, where <cite>p</cite> is a pointer (formal
+argument to the entrypoint, or global variable), and <cite>n</cite> is a variable of
+integral type that represents the length of the array pointed to by <cite>p</cite> (in
+number of elements of type <cite>t</cite>, if <cite>p</cite> is of type <cite>t*</cite>).</p></li>
+<li><p><cite>treat-pointer-as-array</cite> [project-defining knob]: Formal arguments or global variables that are declared as naked pointers
+(like <cite>int *p</cite> or <cite>struct t * x</cite>), but need to be treated as arrays (default:
+[]).</p></li>
+</ul>
+</section>
+<section id="build-tools-configuration-options-build-tools">
+<h3>Build-tools configuration options [build-tools]<a class="headerlink" href="#build-tools-configuration-options-build-tools" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>clangxx-path</cite> [runtime knob]: Path to the clang++ executable (defaults to “clang++”)</p></li>
+<li><p><cite>c-pre-processor-flags</cite> [project-defining knob]: Default pre-processor flags</p></li>
+<li><p><cite>clang-path</cite> [runtime knob]: Path to the clang executable (defaults to “clang”)</p></li>
+<li><p><cite>objcopy-path</cite> [runtime knob]: Path to the objcopy executable (defaults to “objcopy”)</p></li>
+<li><p><cite>c-linker-flags</cite> [project-defining knob]: Default linker flags</p></li>
+<li><p><cite>ld-path</cite> [runtime knob]: Path to the ld executable (defaults to “ld”)</p></li>
+</ul>
+</section>
+<section id="cbmc-configuration-options-cbmc">
+<h3>Cbmc configuration options [cbmc]<a class="headerlink" href="#cbmc-configuration-options-cbmc" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>timeout</cite> [runtime knob]: Sets the timeout of the tool (default: 0.000). If set to 0, no timeout is
+imposed on the CBMC process.</p></li>
+<li><p><cite>mode</cite> [runtime knob]: Sets CBMC’s mode. It can either be “cover” (standard coverage analysis),
+“assert” (uncoverability detection with assertions) or “clabel”
+(uncoverability detection with C labels). (default: “cover”).</p></li>
+<li><p><cite>unwind</cite> [runtime knob]: Sets the loop unwinding (default: 10). If set to 0, there will not be
+unwinding.</p></li>
+</ul>
+</section>
+<section id="eacsl-configuration-options-eacsl">
+<h3>Eacsl configuration options [eacsl]<a class="headerlink" href="#eacsl-configuration-options-eacsl" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>path</cite> [runtime knob]: Path to the e-acsl-gcc.sh executable</p></li>
+<li><p><cite>enable</cite> [project-defining knob]: Enables post-processing with E-ACSL (default: false)</p></li>
+<li><p><cite>mode</cite> [project-defining knob]: E-ACSL post-processing mode. Available modes are: parallel (activated with
+“p”), and sequential (activated with “s”). The parallel mode will switch to
+sequential if it fails too many times.  Defaults to “sequential”.</p></li>
+</ul>
+</section>
+<section id="export-configuration-options-export">
+<h3>Export configuration options [export]<a class="headerlink" href="#export-configuration-options-export" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>malloc-heapside-memory</cite> [runtime knob]: Use <cite>malloc</cite> to allocate heap-side memory in generated C code. When false,
+heap-side memory is allocated statically. Defaults to true. Forced to true in
+combined testsuites</p></li>
+<li><p><cite>split-suite</cite> [project-defining knob]: Whether to put individual tests in separate C files, or to combine them.
+Defaults to false</p></li>
+</ul>
+</section>
+<section id="fixtures-configuration-options-fixtures">
+<h3>Fixtures configuration options [fixtures]<a class="headerlink" href="#fixtures-configuration-options-fixtures" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>seek-oracle-failures</cite> [project-defining knob]: Whether to instruct analysis tools to aim at generating tests that violate
+the oracle, in addition to a testsuite that targets coverage.</p></li>
+<li><p><cite>init</cite> [project-defining knob]: Initialization function for the entrypoint.  If given, this setting must be
+the name of a function defined in either the project codebase or within a
+file listed in <cite>files</cite>.  This function must not accept any argument.</p></li>
+<li><p><cite>oracle</cite> [project-defining knob]: Oracle function for the entrypoint.  Constraints of <cite>init</cite> also apply, with
+the requirements that the given function: (i) must accept an additional last
+argument that is given the entrypoint’s return value (if non-void); and (ii)
+return a zero value of an integral type (like <cite>int</cite>) if and only if the
+oracle fails.</p></li>
+<li><p><cite>files</cite> [project-defining knob]: C files where to find additional test fixtures like initialization and oracle
+functions.</p></li>
+</ul>
+</section>
+<section id="klee-configuration-options-klee">
+<h3>Klee configuration options [klee]<a class="headerlink" href="#klee-configuration-options-klee" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>only-new-tests</cite> [runtime knob]: Activate option ‘–only-output-states-covering-new’ (default: true)</p></li>
+<li><p><cite>timeout</cite> [runtime knob]: Sets the timeout of the tool, in seconds; 0 means no timeout (default:
+30.000)</p></li>
+<li><p><cite>libc</cite> [runtime knob]: Choose libc version (default: “none”)</p></li>
+<li><p><cite>search</cite> [runtime knob]: Specify klee search strategy (see <cite>klee –help</cite> for details, use an empty
+listfor klee defaults — default: [])</p></li>
+<li><p><cite>replay-max-concurrency</cite> [runtime knob]: Maximum number of replayers running concurrently. A null value enables full
+parallelism (this is the default), and a negative value disables on-the-fly
+replay of test cases</p></li>
+<li><p><cite>replay</cite> [runtime knob]: On-the-fly replay of generated test cases (default: “yes”; possible values:
+{inhibit, yes, delayed, force})</p></li>
+<li><p><cite>label-handling</cite> [project-defining knob]: Label handling mode (default: “optimize”; possible values: {ignore, naive,
+optimize, optimize+avoid, optimize+keepall})</p></li>
+<li><p><cite>keep-error-cases</cite> [runtime knob]: Keep tests that are generated because they raise errors (default: true)</p></li>
+</ul>
+</section>
+<section id="lcov-configuration-options-lcov">
+<h3>Lcov configuration options [lcov]<a class="headerlink" href="#lcov-configuration-options-lcov" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>output-directory</cite> [runtime knob]: Path to a directory where to output the report; if “”, the report is generated in a directory ‘lcov/report’ that is situated within the project working directory (defaults to “”)</p></li>
+<li><dl class="simple">
+<dt><cite>report-in-logs</cite> [runtime knob]: Include a textual representation of the coverage report in logs</dt><dd><p>(default is false)</p>
+</dd>
+</dl>
+</li>
+<li><p><cite>include-testsuite</cite> [runtime knob]: Include coverage of generated testsuite files in lcov report (default is
+false)</p></li>
+<li><p><cite>llvm-cov-path</cite> [runtime knob]: Path to the llvm-cov executable (defaults to “llvm-cov”)</p></li>
+<li><p><cite>enable</cite> [runtime knob]: Enable report generation via lcov (false by default). NOTE: custom
+user-provided tests are not taken into account when computing coverage for
+LCOV</p></li>
+<li><p><cite>executable-path</cite> [runtime knob]: Path to the lcov executable (defaults to “lcov”)</p></li>
+<li><p><cite>genhtml-path</cite> [runtime knob]: Path to the genhtml executable (defaults to “genhtml”)</p></li>
+<li><p><cite>llvm-profdata-path</cite> [runtime knob]: Path to the llvm-profdata executable (defaults to “llvm-profdata”)</p></li>
+<li><p><cite>text-report</cite> [runtime knob]: Unless “”, which is the default, name of a file where to export a textual
+representation of the coverage report</p></li>
+</ul>
+</section>
+<section id="libfuzzer-configuration-options-libfuzzer">
+<h3>Libfuzzer configuration options [libfuzzer]<a class="headerlink" href="#libfuzzer-configuration-options-libfuzzer" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>max-starvation-time</cite> [runtime knob]: Maximum number of seconds to wait for valid inputs from the corpus in case no
+randomly generated seed is valid (in seconds, default: 60)</p></li>
+<li><p><cite>init-corpus-size</cite> [runtime knob]: Size of the initial input corpus (default: 10; must be strictly positive)</p></li>
+<li><p><cite>use-cmp</cite> [runtime knob]: Whether tracing of comparison instructions may be used to guide mutations
+(default: true; using this feature may increase the amount of generated test
+cases)</p></li>
+<li><p><cite>timeout</cite> [runtime knob]: Total time to spend while fuzzing (in seconds, default: 30.000; 0 means run
+indefinitely)</p></li>
+<li><p><cite>labels-only</cite> [project-defining knob]: Whether to restrict libfuzzers’ sensitivity to labels instead of to its own
+counters (default: false; <cite>use-counters</cite> and <cite>use-cmp</cite> have no effect when
+used in combination with this option)</p></li>
+<li><p><cite>runs</cite> [runtime knob]: Number of individual test runs (default: -1; a strictly negative value
+indicates an infinite number of runs)</p></li>
+<li><p><cite>init-corpus-with-uniform-bytes</cite> [runtime knob]: Whether to include inputs that only consist of bytes of the given values into
+the initial corpus (default: [”u0000”, “u0001”])</p></li>
+<li><p><cite>use-counters</cite> [runtime knob]: Whether libfuzzer’s coverage counters may be used as features (default:
+false; using counters may increase the amount of generated test cases)</p></li>
+<li><p><cite>init-corpus-with-nulls</cite> [runtime knob]: Whether to include an input that only consists of null bytes into the initial
+corpus (default: true); equivalent to specifying ‘000’ in
+<cite>init-corpus-with-uniform-bytes</cite></p></li>
+<li><p><cite>triage-timeout</cite> [runtime knob]: Total time to spend while in each triage phase (in seconds, default: 0.000; 0
+means run indefinitely)</p></li>
+<li><p><cite>seed</cite> [runtime knob]: Seed to pass to libfuzzer.  Default is 0, which instructs libfuzzer to
+generate a seed internally.</p></li>
+<li><p><cite>micro-timeout</cite> [runtime knob]: Single-test timeout (in seconds, default: 1.000)</p></li>
+</ul>
+</section>
+<section id="lreplay-configuration-options-lreplay">
+<h3>Lreplay configuration options [lreplay]<a class="headerlink" href="#lreplay-configuration-options-lreplay" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>enable</cite> [runtime knob]: Enable post-processing with lreplay (defaults to true)</p></li>
+</ul>
+</section>
+<section id="luncov-configuration-options-luncov">
+<h3>Luncov configuration options [luncov]<a class="headerlink" href="#luncov-configuration-options-luncov" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>extra-args</cite> [runtime knob]: Adds extra arguments to frama-c as pair of “cmd_key:cmd_value” separated by a
+comma (default: [])</p></li>
+<li><p><cite>plugins</cite> [runtime knob]: Sets the plugins tools used by luncov. Default is [“wp”]. “eva” (or “value”)
+is also possible, but not recommended as it may report coverable labels
+uncoverable.</p></li>
+</ul>
+</section>
+<section id="report-configuration-options-report">
+<h3>Report configuration options [report]<a class="headerlink" href="#report-configuration-options-report" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>output-dir</cite> [runtime knob]: Output directory (default: “report”)</p></li>
+<li><p><cite>enable</cite> [runtime knob]: Generates an HTML report (default: false)</p></li>
+<li><p><cite>format</cite> [runtime knob]: Selects whether the report must be in a single page (“onepage”) or with tabs
+(“pretty”) (default: “pretty”)</p></li>
+</ul>
+</section>
+<section id="test-runner-configuration-options-test-runner">
+<h3>Test-runner configuration options [test-runner]<a class="headerlink" href="#test-runner-configuration-options-test-runner" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><cite>max-concurrency</cite> [runtime knob]: Maximum number of replayers running concurrently (default: 1; 1 or less
+disables parallelism)</p></li>
+<li><p><cite>custom-tests</cite> [runtime knob]: Custom tests to be added to the testsuite; they are played before any
+analysis or tests generation is started (default: [])</p></li>
+</ul>
+<section id="about-pointer-specification">
+<h4>About pointer specification<a class="headerlink" href="#about-pointer-specification" title="Link to this heading"></a></h4>
+<p>The core configuration options <cite>treat_pointer_as_array/cstring</cite> require a list of pointers.
+It is possible to directly specify inputs or fields of a given structure.
+Examples</p>
+<ul class="simple">
+<li><p><cite>treat-pointer-as-array = [“foo”]</cite>: input <cite>foo</cite> is not only a pointer, but an array with
+several elements whose size is bounded by <cite>max-ptr-array-length</cite>.</p></li>
+<li><p><cite>treat-pointer-as-cstring = [{struct t}.p]</cite>: all values of type <cite>struct t</cite> in the input
+has a field <cite>p</cite> that must be a a <cite>char*</cite> and is a string.</p></li>
+</ul>
+<p>A similar syntax is used for <cite>array-size-mapping</cite>: this list is a list of pairs of
+named locations separated by ‘:’.</p>
+<ul class="simple">
+<li><p><cite>array-size-mapping=[arr:N]</cite>: the input <cite>arr</cite> is an array that must have size <cite>N</cite>.</p></li>
+<li><p><cite>array-size-mapping=[{struct s}:a:N]</cite>: all values of type <cite>struct s</cite> in the input
+has a field <cite>a</cite> that is an array of <cite>N</cite>.</p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="command-line">
+<h2>Command line<a class="headerlink" href="#command-line" title="Link to this heading"></a></h2>
+<p>Previous options can be accessed via the command line interface with their key
+(for example, <cite>$ seacoral –force-preprocess</cite>). Both the configuration file and
+CLI arguments can be used; CLI arguments will override keys set up in the
+configuration file.</p>
+</section>
+<section id="environment-variables">
+<h2>Environment variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Variable</p></th>
+<th class="head"><p>Documentation</p></th>
+<th class="head"><p>Default value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CLANG</p></td>
+<td><p>Executable name of <cite>clang</cite></p></td>
+<td><p><cite>clang</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p>CLANGXX</p></td>
+<td><p>Executable name of <cite>clang++</cite></p></td>
+<td><p><cite>clang++</cite></p></td>
+</tr>
+<tr class="row-even"><td><p>CPPFLAGS</p></td>
+<td><p>Flags to use with <cite>cpp</cite></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>EACSL_GCC</p></td>
+<td><p>Executable name of <cite>e-acsl-gcc</cite></p></td>
+<td><p><cite>e-acsl-gcc.sh</cite></p></td>
+</tr>
+<tr class="row-even"><td><p>LD</p></td>
+<td><p>Path to the ld executable</p></td>
+<td><p><cite>ld</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p>LDFLAGS</p></td>
+<td><p>Flags to use with <cite>clang</cite></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>OBJCOPY</p></td>
+<td><p>Path to the objcopy executable</p></td>
+<td><p><cite>objcopy</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p>OPAM_SWITCH_PREFIX</p></td>
+<td><p>The prefix of your opam switch</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>SC_ENABLE_CONSOLE_TIMING</p></td>
+<td><p>Defines the precision of the logged times</p></td>
+<td><p><cite>true</cite></p></td>
+</tr>
+<tr class="row-odd"><td><p>SC_ENABLE_DETAILED_STATS</p></td>
+<td><p>Displays the results of lreplay and eacsl</p></td>
+<td><p><cite>true</cite></p></td>
+</tr>
+<tr class="row-even"><td><p>SC_TIDY_COMMANDS</p></td>
+<td><p>Prints processes logs better</p></td>
+<td><p><cite>false</cite></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="project.html" class="btn btn-neutral float-right" title="Project management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright OCamlPro.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

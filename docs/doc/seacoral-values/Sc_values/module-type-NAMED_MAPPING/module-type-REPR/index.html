@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>REPR (seacoral-values.Sc_values.NAMED_MAPPING.REPR)</title><meta charset="utf-8"/><link rel="stylesheet" href="../../../../odoc.support/odoc.css"/><meta name="generator" content="odoc 3.1.0"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><script src="../../../../odoc.support/highlight.pack.js"></script><script>hljs.initHighlightingOnLoad();</script></head><body class="odoc"><nav class="odoc-nav"><a href="../index.html">Up</a> – <a href="../../../../index.html">Index</a> &#x00BB; <a href="../../../index.html">seacoral-values</a> &#x00BB; <a href="../../index.html">Sc_values</a> &#x00BB; <a href="../index.html">NAMED_MAPPING</a> &#x00BB; REPR</nav><header class="odoc-preamble"><h1>Module type <code><span>NAMED_MAPPING.REPR</span></code></h1><p>Bound representation types</p></header><div class="odoc-content"><div class="odoc-spec"><div class="spec module anchored" id="module-Params"><a href="#module-Params" class="anchor"></a><code><span><span class="keyword">module</span> <a href="Params/index.html">Params</a></span><span> : <span class="keyword">sig</span> ... <span class="keyword">end</span></span></code></div><div class="spec-doc"><p>Encoding parameters for the representation</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-size_bounds"><a href="#val-size_bounds" class="anchor"></a><code><span><span class="keyword">val</span> size_bounds : <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span> int * int</span></code></div><div class="spec-doc"><p><code>size_bounds typ</code> returns a pair of the minimal structure size (i.e, assuming all pointers are NULL), and maximal size (i.e., the total memory footprint with pointers unfolded according to <code>Encoding.max_ptr_array_length</code>)</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-reachable_types_with_pointers"><a href="#val-reachable_types_with_pointers" class="anchor"></a><code><span><span class="keyword">val</span> reachable_types_with_pointers : <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span> <a href="../../../../seacoral-c/Sc_C/Type_collections/SET/index.html#type-t">Sc_C.Type_collections.SET.t</a></span></code></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-fold_access_paths"><a href="#val-fold_access_paths" class="anchor"></a><code><span><span class="keyword">val</span> fold_access_paths : 
+  <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?max_depth</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_prm</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span class="type-var">'a</span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_ptr</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span>[ <span>`Carray_with_bound_length of int</span>
+      <span><span>| `Carray_with_length_field</span> of <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.field_access</span></span>
+      <span>| `Cstring</span> ]</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span class="type-var">'a</span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+  <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p><code>fold_access_paths typ ~max_depth ~f_prm ~f_ptr acc</code> folds <code>f_prm</code> and <code>f_ptr</code> over every canonical access path suffix that may be a valid memory access from a value of type <code>typ</code> (cf <a href="../../Encoding/index.html#val-ctyp_fold_access_paths"><code>Encoding.ctyp_fold_access_paths</code></a>).</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-fold_direct_access_paths"><a href="#val-fold_direct_access_paths" class="anchor"></a><code><span><span class="keyword">val</span> fold_direct_access_paths : 
+  <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_prm</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span class="type-var">'a</span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_ptr</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span>[ <span>`Carray_with_bound_length of int</span>
+      <span><span>| `Carray_with_length_field</span> of <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.field_access</span></span>
+      <span>| `Cstring</span> ]</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span class="type-var">'a</span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+  <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p><code>fold_direct_access_paths typ ~f_prm ~f_ptr acc</code> folds <code>f_prm</code> and <code>f_ptr</code> over every field defined in type <code>typ</code>; referenced types are NOT visited recursively (cf <a href="../../Encoding/index.html#val-ctyp_fold_direct_access_paths"><code>Encoding.ctyp_fold_direct_access_paths</code></a>).</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-fold_reachable_pointers"><a href="#val-fold_reachable_pointers" class="anchor"></a><code><span><span class="keyword">val</span> fold_reachable_pointers : 
+  <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?max_depth</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">f</span>:
+    <span><span>(<span><span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ptr_attributes</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span class="type-var">'a</span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="label">merge</span>:<span>(<span><span><span class="type-var">'a</span> <a href="../../../../seacoral-basics/NEL/index.html#type-t">NEL.t</a></span> <span class="arrow">&#45;&gt;</span></span> <span class="type-var">'a</span>)</span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+  <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p><code>fold_reachable_pointers ctyp ~max_depth ~f ~merge acc</code> folds <code>f</code> over every pointer field defined in type <code>ctyp</code>; pointed types are visited recursively (up to and including <code>max_depth</code>), and results of accumulation over union fields are computed using <code>merge</code>. <code>max_depth</code> defaults to <a href="../../index.html#type-encoding_params.max_non_nil_ptr_depth"><code>max_non_nil_ptr_depth</code></a> (given via encoding parameters) (cf <a href="../../Encoding/index.html#val-ctyp_fold_reachable_pointers"><code>Encoding.ctyp_fold_reachable_pointers</code></a>).</p></div></div><div class="odoc-spec"><div class="spec value anchored" id="val-visit_access_paths"><a href="#val-visit_access_paths" class="anchor"></a><code><span><span class="keyword">val</span> visit_access_paths : 
+  <span><a href="../index.html#type-typ">typ</a> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?max_depth</span>:int <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_prm</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="xref-unresolved">Sc_values__.Cvalues.visit_action</span></span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="optlabel">?f_ptr</span>:
+    <span><span>(<span><span><a href="../../../../seacoral-c/Sc_C/Types/index.html#type-access_path_suffix">Sc_C.Types.access_path_suffix</a> option</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span>[ <span>`Carray_with_bound_length of int</span>
+      <span><span>| `Carray_with_length_field</span> of <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.field_access</span></span>
+      <span>| `Cstring</span> ]</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+      <span><span class="type-var">'a</span> <span class="xref-unresolved">Sc_values__.Cvalues.visit_action</span></span>)</span>
+      <span class="xref-unresolved">Sc_values__.Cvalues.TYPES.ctyp_consumer</span></span> <span class="arrow">&#45;&gt;</span></span>
+  <span><span class="type-var">'a</span> <span class="arrow">&#45;&gt;</span></span>
+  <span class="type-var">'a</span></span></code></div><div class="spec-doc"><p><code>visit_access_paths typ ~max_depth ~f_prm ~f_ptr acc</code> visits every canonical access path suffix that may be a valid memory access from a value of type <code>typ</code> using <code>f_prm</code> and <code>f_ptr</code> (cf <a href="../../Encoding/index.html#val-ctyp_visit_access_paths"><code>Encoding.ctyp_visit_access_paths</code></a>).</p></div></div><div class="odoc-spec"><div class="spec module anchored" id="module-Val"><a href="#module-Val" class="anchor"></a><code><span><span class="keyword">module</span> <a href="Val/index.html">Val</a></span><span> : <span class="keyword">sig</span> ... <span class="keyword">end</span></span></code></div><div class="spec-doc"><p>Typed values</p></div></div></div></body></html>
